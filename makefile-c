@@ -1,0 +1,55 @@
+##############################################################################
+################################ makefile-c ##################################
+##############################################################################
+#                                                                            #
+#   complete makefile of LagrangianDualSolver                                #
+#                                                                            #
+#   The makefile defines internally all external libraries (comprised the    #
+#   SMS++ one) required by LagrangianDualSolver. Accordingly, all necessary  #
+#   OBJ, H, -I directives, external libraries + -L<libdirs> are added to the #
+#   corresponding LgDSLV* macros.                                            #
+#                                                                            #
+#   Input:  $(CC)        = compiler command                                  #
+#           $(SW)        = compiler options                                  #
+#           $(LgDSLVSDR) = the directory where BundleSolver source is        #
+#           $(LgDSLVODR) = the directory where the objects have to be put    #
+#                                                                            #
+#   Output: $(LgDSLVOBJ) = the final object(s) / library                     #
+#           $(LgDSLVLIB) = external libraries + -L<libdirs>                  #
+#           $(LgDSLVH)   = the .h files to include for BundleSolver          #
+#           $(LgDSLVINC) = the -I$( BundleSolver directory )                 #
+#                                                                            #
+#                              Antonio Frangioni                             #
+#                               Enrico Gorgone                               #
+#                         Dipartimento di Informatica                        #
+#                             Universita' di Pisa                            #
+#                                                                            #
+##############################################################################
+
+# define & include the necessary modules- - - - - - - - - - - - - - - - - - -
+# if a module is not used in the current configuration, just comment out the
+# corresponding include line
+# each module outputs some macros to be used here:
+# *OBJ is the final object/library
+# *H   is the list of all include files
+# *INC is the -I<include directories>
+
+# define input macros for SMS++ library makefile, then include it
+SMS++SDR = $(LgDSLVSDR)../SMS++/
+include $(SMS++SDR)lib/makefile-inc
+
+# include the makefile requiring all external modules in input
+include $(LgDSLVSDR)/makefile
+
+# macroes to be exported- - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# append external stuff defined in the other makefiles to LgDSLVOBJ,
+# LgDSLVINC and LgDSLVH, thus the := assignment has to be used (use GNU make)
+LgDSLVOBJ := $(LgDSLVOBJ) $(SMS++OBJ)
+LgDSLVINC := $(LgDSLVINC) $(SMS++INC)  
+LgDSLVH := $(LgDSLVH) $(SMS++H) 
+
+# external libreries for LagrangianDualSolver (those of SMS++)
+LgDSLVLIB  =  $(SMS++LIB) 
+
+############################ End of makefile #################################
